@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0b0b16">
+    <title>Edwards och Johns spel – en levande spelvärld</title>
+    <meta name="description" content="Gratis webbspel gjorda av Edward och John – i en hel värld att utforska. Dagligt mysteriespel, gemensamma bossar, egna rum, dueller mot kompisar och hemligheter att hitta.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Edwards och Johns spel">
+    <meta property="og:title" content="Edwards och Johns spel – en levande spelvärld">
+    <meta property="og:description" content="Utforska världen, lös dagens mysterium och besegra veckans boss tillsammans med alla andra.">
+    <meta property="og:image" content="https://edhb15.github.io/EoJ-spel/dependencies/share.jpg">
+    <meta property="og:locale" content="sv_SE">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Psst. Terminalen i Neonzonen känner igen koden EOJ2026. -->
+    <canvas id="world" aria-label="Spelvärlden. Använd piltangenterna eller klicka för att gå. Knappen Alla spel visar en lista."></canvas>
+
+    <header class="hud-top">
+        <div class="brand">
+            <h1>Edwards och Johns spel<span id="pixel" title="" aria-hidden="true"></span></h1>
+            <p>En levande spelvärld</p>
+        </div>
+        <button class="player-chip" type="button" data-act="profile" aria-label="Din profil">
+            <span id="chip-avatar" class="chip-avatar"></span>
+            <span class="chip-text"><b id="chip-name"></b><small><span id="chip-lvl"></span> · 🪙 <span id="chip-coins"></span></small></span>
+        </button>
+    </header>
+
+    <nav class="hud-bar" aria-label="Snabbknappar">
+        <button type="button" class="surprise" data-act="surprise">🎲 SURPRISE ME!</button>
+        <button type="button" data-act="mystery">🕵️ Mysterium<i id="mystery-dot" class="dot" hidden></i></button>
+        <button type="button" data-act="boss">👹 Boss <span class="mini-hp"><span id="boss-hp"></span></span></button>
+        <button type="button" data-act="community">🎯 Utmaning <small id="cc-pct"></small></button>
+        <button type="button" data-act="duel">⚔️ Duell</button>
+        <button type="button" data-act="room">🏠 Mitt rum</button>
+        <button type="button" data-act="fame">🏆 Topplistor</button>
+        <button type="button" data-act="all">📋 Alla spel</button>
+    </nav>
+
+    <div id="roulette-banner" class="roulette-banner" hidden></div>
+    <button id="prompt" class="prompt" type="button" hidden></button>
+
+    <div class="ticker" role="button" tabindex="0" data-act="feed" aria-label="Live-flöde – öppna">
+        <span class="live">● LIVE</span><span id="ticker-text" class="ticker-text">Laddar världen…</span>
+    </div>
+    <footer class="tiny"><span id="copy">© 2026 Edwards och Johns spel</span> · <a href="https://edhb15.github.io/EoJ-spel/">Gamla sidan</a></footer>
+
+    <!-- For search engines and anyone without JavaScript -->
+    <noscript>
+        <div class="noscript">
+            <h2>Edwards och Johns spel</h2>
+            <p>Den här världen behöver JavaScript. Här är spelen:</p>
+            <ul>
+                <li><a href="https://edhb15.github.io/EoJ-spel/games/the-legend-of-andorra/index.html">The Legend of Andorra</a></li>
+                <li><a href="https://edhb15.github.io/chicago-bois/">Chicago Bois</a></li>
+                <li><a href="https://edhb15.github.io/EoJ-spel/games/skyward/index.html">Skyward</a></li>
+                <li><a href="https://edhb15.github.io/EoJ-spel/games/world-domination/index.html">World Domination</a></li>
+                <li><a href="https://edhb15.github.io/EoJ-spel/games/stunt-rider-3d/index.html">Stunt Rider 3D</a></li>
+                <li><a href="https://edhb15.github.io/EoJ-spel/games/Ski-to-death-3d/index.html">Ski to Death 3D</a></li>
+                <li><a href="https://edhb15.github.io/EoJ-spel/games/impossible-rooms-3d/index.html">Impossible Rooms 3D</a></li>
+                <li><a href="https://edhb15.github.io/EoJ-spel/games/smita-fran-ledet/index.html">Smita från ledet</a></li>
+                <li><a href="https://edhb15.github.io/EoJ-spel/games/open-world-sweden/index.html">Open World Sweden</a></li>
+                <li><a href="https://edhb15.github.io/EoJ-spel/games/matchdag/docs/index.html">Matchdag</a></li>
+                <li><a href="https://edhb15.github.io/EoJ-spel/games/teacher-meltdown/index.html">Teacher Meltdown</a></li>
+            </ul>
+        </div>
+    </noscript>
+
+    <div id="modals"></div>
+    <div id="toasts" aria-live="polite"></div>
+
+    <script src="js/config.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/core.js"></script>
+    <script src="js/minigames.js"></script>
+    <script src="js/world.js"></script>
+    <script src="js/features.js"></script>
+    <script src="js/main.js"></script>
+    <!-- GoatCounter: same visitor stats as the old site (no cookies) -->
+    <script data-goatcounter="https://eoj-spel.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
