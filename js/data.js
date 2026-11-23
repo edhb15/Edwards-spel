@@ -14,7 +14,6 @@
     skola: { name: 'Skolgården', icon: '🏫', color: '#5a4a1f', ground: '#4a3d1c', desc: 'Skolkaos och rymningar', x: 1460, y: 1200, w: 780, h: 520 },
     hjarna: { name: 'Hjärnberget', icon: '🧠', color: '#2a2f6a', ground: '#23284f', desc: 'Pussel och strategi', x: 180, y: 1200, w: 760, h: 520 },
     aventyr: { name: 'Äventyrsskogen', icon: '🌲', color: '#1f4a2a', ground: '#18361f', desc: 'Äventyr och fantasy', x: 120, y: 740, w: 560, h: 420 },
-    neon: { name: 'Neonzonen', icon: '🌈', color: '#c33dff', ground: '#140a22', desc: 'Arkadhall med alla minispel – låses upp när du spelat 3 olika spel', x: 960, y: 40, w: 480, h: 440, locked: true },
   };
 
   // x/y = door position on the map (building is drawn above it)
@@ -85,6 +84,8 @@
     world: [['Bilda en allians inom 5 minuter', 5], ['Ta över ett grannland utan krig', 10], ['Spela som det minsta landet du hittar', 10]],
   };
 
+  // Bosses come one after another: a new one appears as soon as the old one dies.
+  // If nobody manages to kill it within a week, the boss wins and the next one comes.
   const BOSSES = [
     { name: 'Glitchkungen', icon: '👾', color: '#a970ff', desc: 'Han äter pixlar till frukost.' },
     { name: 'Lagg-monstret', icon: '🐌', color: '#3dff8a', desc: 'Gör allt ... lite ... långsammare.' },
@@ -92,12 +93,34 @@
     { name: 'Buggzilla', icon: '🦖', color: '#ff3d6e', desc: 'Föddes i en kodrad som ingen testade.' },
     { name: 'Robot-rektorn', icon: '🤖', color: '#5ee7ff', desc: 'Har kvarsittning för alla. Samtidigt.' },
     { name: 'Molnspöket', icon: '👻', color: '#e8ecff', desc: 'Raderar sparfiler när ingen tittar.' },
+    { name: 'Krakenkoden', icon: '🦑', color: '#ff79c6', desc: 'Åtta armar, åtta buggar.' },
+    { name: 'Frysbjörnen', icon: '🐻‍❄️', color: '#bfe9ff', desc: 'Får alla spel att frysa.' },
+    { name: 'Skelettkungen', icon: '💀', color: '#e8e2c8', desc: 'Har varit död förut. Det hjälpte inte.' },
+    { name: 'Lavagolemen', icon: '🌋', color: '#ff5a1f', desc: 'Golvet är lava. Han ÄR golvet.' },
+    { name: 'Spökpiraten', icon: '🏴‍☠️', color: '#9a8cff', desc: 'Stjäl highscores från de sju haven.' },
+    { name: 'Megamyggan', icon: '🦟', color: '#c8ff3d', desc: 'Surrar i ditt öra varje gång du ska landa.' },
   ];
-  const BOSS_HP = 60000;
+  const BOSS_EPOCH = Date.parse('2026-11-23T18:00:00Z'); // the first boss appeared
+  const BOSS_WEEK = 7 * 86400000;
+  const bossHp = (n) => Math.min(150000, 15000 + (n - 1) * 5000);
+
+  // How playing hurts the boss. The games send these rows themselves (shared/eoj.js in EoJ-spel):
+  //   u:time:<game>  every 2 minutes of active play  -> 100 damage
+  //   u:res:<board>  a result screen                 -> damage from the score (100–2500)
+  //   u:play:<game>  starting a game from the world  -> 50 damage
+  // The daily mystery game gives double damage that day.
+  const BOARDS = {
+    'stunt-rider': { g: 'stunt', unit: 'p', dmg: (s) => 100 + Math.sqrt(s) * 6 },
+    'ski-to-death': { g: 'ski', unit: 'p', dmg: (s) => 100 + Math.sqrt(s) * 10 },
+    smita: { g: 'smita', unit: 's', dmg: (s) => 80 + s * 6 },
+    'teacher-meltdown': { g: 'teacher', unit: 't', low: true, dmg: (s) => 2400 - s * 5 },
+    'impossible-rooms': { g: 'rooms', unit: 't', low: true, dmg: (s) => 4000 - s },
+    'chicago-bois': { g: 'chicago', unit: 'p', dmg: (s) => 100 + Math.sqrt(s) * 6 },
+  };
 
   // Community challenges (one per week). metric is counted from everyone's activity this week.
   const COMMUNITY = [
-    { metric: 'points', goal: 30000, text: 'Samla 30 000 poäng i minispel tillsammans', reward: 'gold-fountain', rewardName: 'Guldfontänen i Torget + 🏆 Guldpokal till ditt rum' },
+    { metric: 'damage', goal: 60000, text: 'Gör 60 000 skada på bossar tillsammans', reward: 'gold-fountain', rewardName: 'Guldfontänen i Torget + 🏆 Guldpokal till ditt rum' },
     { metric: 'plays', goal: 150, text: 'Starta 150 spel tillsammans', reward: 'fireworks', rewardName: 'Fyrverkerier över världen + 🎆 Raket till ditt rum' },
     { metric: 'games', goal: 11, text: 'Spela alla 11 spelen minst en gång (tillsammans)', reward: 'rainbow', rewardName: 'Regnbågsväg i hela världen + 🌈 Regnbågsmatta' },
     { metric: 'secrets', goal: 25, text: 'Hitta hemligheter 25 gånger tillsammans', reward: 'ufo', rewardName: 'Ett UFO svävar över Torget + 🛸 UFO-modell' },
@@ -132,8 +155,8 @@
     'artifacts': { i: '🌟', n: 'Samlare', d: 'Hitta alla 8 artefakter' },
     'variety': { i: '🌈', n: 'Allätare', d: 'Spela 5 olika spel' },
     'all-games': { i: '💯', n: 'Komplettist', d: 'Spela alla spel' },
-    'neon': { i: '🌆', n: 'Neonpass', d: 'Lås upp Neonzonen' },
-    'boss': { i: '⚔️', n: 'Bosskämpe', d: 'Gör skada på veckans boss' },
+    'marathon': { i: '⏱️', n: 'Maratonspelare', d: 'Spela i en timme sammanlagt' },
+    'boss': { i: '⚔️', n: 'Bosskämpe', d: 'Skada en boss genom att spela' },
     'boss-kill': { i: '👑', n: 'Bossdräpare', d: 'Var med när en boss besegrades' },
     'mystery': { i: '🔎', n: 'Mysterielösare', d: 'Lös dagens mysterium' },
     'detective': { i: '🕵️', n: 'Dagens detektiv', d: 'Lös dagens mysterium FÖRST av alla' },
@@ -158,9 +181,8 @@
     'code-zorg': { i: '☠️', n: 'Zorgs namn', d: 'Skrev in en skurks namn i terminalen', secret: true },
     'code-eoj': { i: '💾', n: 'Källkoden', d: 'Hittade koden i sidans källkod', secret: true },
     'code-console': { i: '🖥️', n: 'Hackern', d: 'Hittade koden i konsolen', secret: true },
-    'pong': { i: '🏓', n: 'Hemliga spelet', d: 'Vann i det hemliga spelet', secret: true },
   };
-  const SECRETS = ['cave', 'konami', 'footer', 'night-owl', 'edge', 'logo', 'boss-poke', 'wish', 'code-zorg', 'code-eoj', 'code-console', 'pong'];
+  const SECRETS = ['cave', 'konami', 'footer', 'night-owl', 'edge', 'logo', 'boss-poke', 'wish', 'code-zorg', 'code-eoj', 'code-console'];
   const CODES = { ZORG: 'code-zorg', EOJ2026: 'code-eoj', NEONHACK: 'code-console' };
 
   // 8 artifacts hidden around the map
@@ -174,8 +196,7 @@
   const TYPES = {
     fart: { t: 'Fartdåre', i: '🏎️' }, action: { t: 'Actionhjälte', i: '💥' }, sport: { t: 'Lagkapten', i: '⚽' },
     skola: { t: 'Kaosmakare', i: '🤪' }, hjarna: { t: 'Hjärnan', i: '🧠' }, aventyr: { t: 'Äventyrare', i: '🗡️' },
-    mini: { t: 'Arkadkung', i: '🕹️' },
   };
 
-  window.EOJ_DATA = { OLD, DISTRICTS, GAMES, CLUES, CLUE_HOURS, ROULETTE, BOSSES, BOSS_HP, COMMUNITY, ITEMS, WALLS, FLOORS, BADGES, SECRETS, CODES, ARTIFACTS, TYPES };
+  window.EOJ_DATA = { OLD, DISTRICTS, GAMES, CLUES, CLUE_HOURS, ROULETTE, BOSSES, BOSS_EPOCH, BOSS_WEEK, bossHp, BOARDS, COMMUNITY, ITEMS, WALLS, FLOORS, BADGES, SECRETS, CODES, ARTIFACTS, TYPES };
 })();

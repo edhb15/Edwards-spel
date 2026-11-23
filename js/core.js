@@ -5,8 +5,9 @@
 
   // ------------------------------------------------------------------ time (Swedish time, same for everyone)
   const TZ = 'Europe/Stockholm';
+  let FMT = null;
   function parts(date) {
-    const f = new Intl.DateTimeFormat('sv-SE', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    const f = FMT || (FMT = new Intl.DateTimeFormat('sv-SE', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }));
     const o = {};
     f.formatToParts(date || new Date()).forEach((p) => (o[p.type] = p.value));
     return { y: +o.year, mo: +o.month, d: +o.day, h: +o.hour % 24, mi: +o.minute, s: +o.second };
@@ -14,6 +15,10 @@
   const pad = (n) => String(n).padStart(2, '0');
   function today() {
     const p = parts();
+    return p.y + '-' + pad(p.mo) + '-' + pad(p.d);
+  }
+  function dayOf(date) {
+    const p = parts(new Date(date));
     return p.y + '-' + pad(p.mo) + '-' + pad(p.d);
   }
   function hour() {
@@ -387,7 +392,7 @@
   const SITE = location.origin + location.pathname.replace(/index\.html$/, '');
 
   window.W = {
-    D, today, hour, weekInfo, dayStartIso, hash, rng, daily, pick, fmt, ago, ls, cleanName,
+    D, today, dayOf, hour, weekInfo, dayStartIso, hash, rng, daily, pick, fmt, ago, ls, cleanName,
     get profile() { return profile; },
     save, on, emit, insert, rows, isOnline: () => online,
     $, h, toast, modal, closeModal, modalOpen, needName, track, share, SITE,

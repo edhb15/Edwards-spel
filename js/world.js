@@ -6,8 +6,6 @@
   const { D } = W;
   const WW = 2400, WH = 1880;
   const PLAZA = { x: 1200, y: 960, r: 330 };
-  const NEON = D.DISTRICTS.neon;
-  const GATE_Y = NEON.y + NEON.h; // 480
 
   // ------------------------------------------------------------------ structures
   const structs = [];
@@ -22,10 +20,8 @@
   F('profile', 'DNA-labbet', '🧬', 950, 760, 160, 130, '#5ee7ff', 'lab');
   F('home', 'Mitt rum', '🏠', 1200, 1560, 180, 150, '#ffb03d', 'house');
   F('neighbors', 'Granngatan', '🏘️', 1440, 1580, 150, 120, '#e8ecff', 'house');
-  F('fame', 'Hall of Fame', '🏆', 960, 1580, 160, 130, '#ffd23d', 'hall');
-  // Neonzonen: one arcade cabinet per minigame (two rows) + the terminal
-  W.mini.PUBLIC.forEach((m, i) => F('mini:' + m, W.mini.GAMES[m].name, W.mini.GAMES[m].icon, 1020 + (i % 5) * 90, i < 5 ? 210 : 330, 70, 100, W.mini.GAMES[m].color || '#5ee7ff', 'cabinet'));
-  F('terminal', 'Terminalen', '💻', 1200, 430, 80, 60, '#3dff8a', 'terminal');
+  F('fame', 'Hall of Fame', '🏆', 1200, 450, 200, 150, '#ffd23d', 'hall');
+  F('terminal', 'Terminalen', '💻', 960, 1600, 80, 60, '#3dff8a', 'terminal');
   F('wish', 'Önskebrunnen', '⛲', 1200, 1010, 120, 60, '#3d9bff', 'none');
   F('cave', '???', '🕳️', 70, 1000, 70, 60, '#333', 'cave');
   structs.forEach((s) => { s.rect = [s.x - s.w / 2, s.y - s.h, s.w, s.h - 14]; });
@@ -38,7 +34,7 @@
   // ------------------------------------------------------------------ layout of roads, trees, lamps (same for everyone)
   const ROADS = [];
   D.GAMES.forEach((g) => ROADS.push([PLAZA.x, PLAZA.y, g.x, g.y + 30]));
-  ROADS.push([PLAZA.x, PLAZA.y, 1200, GATE_Y + 24], [PLAZA.x, PLAZA.y, 1200, 1580], [1200, 1580, 1440, 1600], [1200, 1580, 960, 1600]);
+  ROADS.push([PLAZA.x, PLAZA.y, 1200, 480], [PLAZA.x, PLAZA.y, 1200, 1580], [1200, 1580, 1440, 1600], [1200, 1580, 960, 1600]);
   function distToRoad(x, y) {
     let best = 1e9;
     for (const [a, b, c, d] of ROADS) {
@@ -48,7 +44,7 @@
     }
     return best;
   }
-  const inNeon = (x, y, pad) => x > NEON.x - pad && x < NEON.x + NEON.w + pad && y < GATE_Y + pad;
+  const inNeon = () => false;
   function blocked(x, y, pad, below) {
     if (Math.hypot(x - PLAZA.x, y - PLAZA.y) < PLAZA.r + 30) return true;
     for (const s of structs) {
@@ -82,7 +78,7 @@
   // ------------------------------------------------------------------ live state
   const state = {
     p: { x: PLAZA.x, y: PLAZA.y + 160, tx: null, ty: null, face: 1, moving: false, after: null, walk: 0 },
-    heat: {}, crowd: {}, ghosts: [], boss: null, rewards: {}, coins: [], neonLocked: true,
+    heat: {}, crowd: {}, ghosts: [], boss: null, rewards: {}, coins: [],
     district: null, near: null, t: 0,
   };
   const imgs = {};
@@ -149,7 +145,6 @@
       const hit = structs.slice().reverse().find((s) => !s.hidden && s.kind !== 'none' && x > s.rect[0] - 6 && x < s.rect[0] + s.rect[2] + 6 && y > s.rect[1] - 60 && y < s.y + 12);
       if (hit) {
         if (hit.id === 'boss') { W.profile.pokes = (W.profile.pokes || 0) + 1; if (W.profile.pokes >= 30) W.award('boss-poke'); }
-        if (state.neonLocked && inNeon(hit.x, hit.y, 0)) { W.emit('enter', hit); return; }
         walkTo(hit.x, hit.y + 22, hit);
       } else walkTo(x, y, null);
     });
@@ -180,7 +175,6 @@
 
   function solids() {
     const list = SOLID.map((s) => s.rect);
-    if (state.neonLocked) list.push([NEON.x - 20, GATE_Y - 4, NEON.w + 40, 22]);
     list.push([PLAZA.x - 62, PLAZA.y - 40, 124, 64]); // fountain
     return list;
   }
@@ -256,7 +250,7 @@
     if (Math.hypot(BOTTLE.x - p.x, BOTTLE.y - p.y) < 40 && !W.has('edge')) {
       W.award('edge');
       W.modal('🍾 Flaskpost!', W.h('div', null, W.h('p', null, 'Någon har kastat en flaska i havet. På lappen står det:'),
-        W.h('blockquote', { class: 'note' }, '”Den som skriver EOJ2026 i terminalen i Neonzonen får se något. Men koden finns egentligen gömd i sidans källkod… – E & J”')));
+        W.h('blockquote', { class: 'note' }, '”Den som skriver EOJ2026 i terminalen vid Mitt rum får se något. Men koden finns egentligen gömd i sidans källkod… – E & J”')));
     }
     // fountain water
     if (Math.random() < dt * 40) {
@@ -310,7 +304,7 @@
           W.profile.visited[cur] = 1;
           W.addXp(20);
           W.toast(d.icon + ' Nytt område: ' + d.name);
-          const all = Object.keys(D.DISTRICTS).filter((k) => k !== 'neon');
+          const all = Object.keys(D.DISTRICTS);
           if (all.every((k) => W.profile.visited[k])) W.award('explorer');
         }
       }
@@ -840,6 +834,13 @@
       if (isNew) { ctx.fillStyle = '#ffd23d'; rr(s.x + w / 2 - 30, top - depth * 0.7 - 18, 46, 20, 10); ctx.fill(); text('NY!', s.x + w / 2 - 7, top - depth * 0.7 - 8, 12, '#1a1400', 900); }
     }
     if (s.kind !== 'cabinet' || state.near === s) sign(s.label + (heat >= 3 ? ' 🔥' : ''), s.x, s.y + 8, state.near === s);
+    if (s.type === 'game') {
+      const lv = W.live || {};
+      const now = lv.playing && lv.playing[s.id];
+      const top = lv.tops && lv.tops[s.id];
+      if (top) { ctx.font = '700 12px system-ui,sans-serif'; const tw = ctx.measureText(top).width + 14; ctx.fillStyle = 'rgba(11,11,22,0.7)'; rr(s.x - tw / 2, s.y + 24, tw, 18, 9); ctx.fill(); text(top, s.x, s.y + 33.5, 12, '#ffd23d', 700); }
+      if (now) { const lbl = '🟢 ' + now + ' spelar nu'; ctx.font = '800 12px system-ui,sans-serif'; const tw = ctx.measureText(lbl).width + 14; ctx.fillStyle = 'rgba(20,120,60,0.9)'; rr(s.x - tw / 2, s.y - 22, tw, 18, 9); ctx.fill(); text(lbl, s.x, s.y - 12.5, 12, '#fff', 800); }
+    }
     // crowd
     const n = s.type === 'game' ? state.crowd[s.id] || 0 : 0;
     for (let i = 0; i < n; i++) {
@@ -950,14 +951,6 @@
     ctx.globalAlpha = 1;
     ctx.fillStyle = gold ? '#d8b04a' : '#a8a4bc'; ctx.fillRect(PLAZA.x - 6, PLAZA.y - 36, 12, 32);
     ctx.beginPath(); ctx.ellipse(PLAZA.x, PLAZA.y - 36, 18, 7, 0, 0, 7); ctx.fill();
-    // neon gate
-    if (state.neonLocked) {
-      ctx.save(); ctx.shadowColor = '#ff3d6e'; ctx.shadowBlur = 14 + Math.sin(t * 4) * 6;
-      ctx.fillStyle = '#ff3d6e'; ctx.fillRect(NEON.x - 20, GATE_Y, NEON.w + 40, 8);
-      for (let gx = NEON.x - 14; gx < NEON.x + NEON.w + 20; gx += 34) ctx.fillRect(gx, GATE_Y - 26, 5, 42);
-      ctx.restore();
-      sign('🔒 Spela 3 olika spel för att låsa upp', 1200, GATE_Y + 4, false);
-    }
     // coins, artifacts, bottle
     const got = W.profile.coinDay.got;
     state.coins.forEach((c) => {
@@ -1139,6 +1132,6 @@
     setBoss(b) { state.boss = b; },
     setCommunity(c) { state.community = c; },
     setRewards(r) { state.rewards = r; },
-    setNeonLocked(v) { state.neonLocked = v; },
+    setNeonLocked() {},
   };
 })();

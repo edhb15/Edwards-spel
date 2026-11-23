@@ -4,7 +4,6 @@
   const { $, h, D } = W;
 
   W.world.init($('#world'));
-  W.world.setNeonLocked(Object.keys(W.profile.plays).length < 3);
 
   // ---------------------------------------------------------------- HUD
   function hud() {
@@ -14,6 +13,10 @@
     $('#chip-coins').textContent = p.coins;
     $('#chip-avatar').style.background = p.color;
     $('#chip-avatar').textContent = p.hat || W.ui.profileType().i;
+    const last = p.lastGame && W.ui.gameById[p.lastGame];
+    const cont = $('#continue-btn');
+    cont.hidden = !last;
+    if (last) cont.textContent = '▶ Fortsätt: ' + last.name;
   }
   W.on('profile', hud);
   hud();
@@ -27,6 +30,7 @@
     room: () => W.ui.openRoom(),
     fame: () => W.ui.openFame(),
     all: () => W.ui.openAll(),
+    continue: () => { const g = W.ui.gameById[W.profile.lastGame]; if (g) W.ui.openGame(g); },
     profile: () => W.ui.openProfile(),
     feed: () => W.ui.openFeed(),
   };
@@ -74,7 +78,7 @@
   const q = new URLSearchParams(location.search);
   function clearQuery() { history.replaceState(null, '', location.pathname); }
   setTimeout(() => {
-    if (q.get('duel')) { const [code, fmt] = q.get('duel').split('-'); W.world.teleport('duel'); W.ui.acceptDuel(code.replace(/[^a-z0-9]/g, '').slice(0, 8), fmt, (q.get('from') || '').slice(0, 12)); clearQuery(); return; }
+    if (q.get('duel')) { const [code, fmt, games] = q.get('duel').split('.'); W.world.teleport('duel'); W.ui.acceptDuel((code || '').replace(/[^a-z0-9]/g, '').slice(0, 8), fmt, (games || '').split('-'), (q.get('from') || '').slice(0, 12)); clearQuery(); return; }
     if (q.get('room')) { W.world.teleport('neighbors'); W.ui.visitRoom(q.get('room').slice(0, 60), (q.get('by') || 'Någon').slice(0, 12)); clearQuery(); return; }
     if (q.get('roulette')) {
       const [g, idx] = q.get('roulette').split('.');
@@ -89,11 +93,11 @@
   function welcome() {
     W.ls.set('eojw:welcomed', true);
     W.modal('Välkommen till Edwards och Johns spel! 🌍', h('div', { class: 'welcome' },
-      h('p', { class: 'lead' }, 'Det här är inte en vanlig hemsida – det är en hel värld. Varje byggnad är ett spel.'),
+      h('p', { class: 'lead' }, 'Alla Edwards och Johns spel – i en hel värld. Varje byggnad är ett spel: gå fram till den och tryck Spela!'),
       h('ul', { class: 'wl' },
         h('li', null, '🚶 ', h('b', null, 'Gå runt: '), 'piltangenter/WASD, eller klicka/tryck där du vill gå. Gå in i en byggnad med ', h('kbd', null, 'E'), ' eller genom att klicka på den.'),
         h('li', null, '🕵️ ', h('b', null, 'Daily Mystery: '), 'ett hemligt spel varje dag – ledtrådar släpps under dagen.'),
-        h('li', null, '👹 ', h('b', null, 'Boss Battle: '), 'alla slåss mot samma boss med minispel. Ny boss varje vecka.'),
+        h('li', null, '👹 ', h('b', null, 'Boss Battle: '), 'alla slåss mot samma boss – genom att spela spelen! Varje minut du spelar och varje resultat gör skada. Dör bossen kommer en ny, annars vinner den efter en vecka.'),
         h('li', null, '🎲 ', h('b', null, 'SURPRISE ME: '), 'slumpat spel + slumpad utmaning + tidsgräns.'),
         h('li', null, '🏠 ', h('b', null, 'Ditt eget rum: '), 'inred, ställ ut troféer, besök andras rum.'),
         h('li', null, '🪙 ', h('b', null, 'Samla mynt '), 'som ligger utspridda – nya varje dag. Och leta efter hemligheter… 🔮')),
@@ -118,6 +122,6 @@
   if (W.hour() < 4) setTimeout(() => W.award('night-owl'), 2500);
   // 5) the console
   console.log('%cHej utvecklare! 👋', 'font-size:20px;font-weight:900;color:#5ee7ff');
-  console.log('%cTerminalen i Neonzonen gillar ordet NEONHACK.', 'color:#a970ff');
+  console.log('%cTerminalen bakom Mitt rum gillar ordet NEONHACK.', 'color:#a970ff');
   console.log('Byggt av Edward och John.');
 })();
