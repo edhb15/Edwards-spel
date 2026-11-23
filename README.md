@@ -10,7 +10,7 @@ Själva spelen ligger kvar i [EoJ-spel](https://github.com/edhb15/EoJ-spel) och 
 
 | Funktion | Var | Hur det funkar |
 |---|---|---|
-| 🌍 Levande spelvärld | Hela kartan | Gå med piltangenter/WASD eller klicka/tryck. Distrikt för varje spelkategori. Byggnaderna lyser och får folkmassor när många spelar dem. Dag och natt följer svensk tid. Mynt (nya varje dag) och 8 artefakter att samla. |
+| 🌍 Levande spelvärld | Hela kartan | Gå med piltangenter/WASD eller klicka/tryck. Distrikt för varje spelkategori med egna mönster, 3D-byggnader, riktigt nattljus med gatlyktor, moln, fåglar och eldflugor. Byggnaderna lyser och får folkmassor när många spelar dem. Dag och natt följer svensk tid. Mynt (nya varje dag) och 8 artefakter att samla. |
 | 🕵️ Daily Mystery Game | Mysterietornet | Ett hemligt spel per dag, samma för alla. 5 ledtrådar släpps kl 06, 10, 14, 18 och 21. Första som löser det får utmärkelsen *Dagens detektiv*. Daglig topplista. |
 | 👹 Global Boss Battle | Bossarenan | En boss per vecka med gemensam HP (60 000). Alla minispelspoäng blir skada. Besegrad boss ger utmärkelse + saker till rummet. |
 | 🧬 Spel som utvecklas efter dig | DNA-labbet | Spelprofil (typ, nivå, XP), spel-DNA per kategori, 4 personliga utmaningar varje dag, spelhistorik, utmärkelser och nya områden som låses upp (Neonzonen, grottan). |
@@ -53,6 +53,6 @@ Om databasen inte svarar (t.ex. pausat gratisprojekt) fungerar allt ändå – d
 - `js/data.js` – spel, distrikt, ledtrådar, bossar, möbler, utmärkelser
 - `js/core.js` – profil, databas, utmärkelser, popup-fönster
 - `js/world.js` – världen (karta, gubbe, byggnader)
-- `js/minigames.js` – minispelen (Stjärnregn, Prickskytt, Asteroidflykt, Minnesrutor + ett hemligt)
+- `js/minigames.js` – 10 minispel (Stjärnregn, Prickskytt, Asteroidflykt, Minnesrutor, Ormen, Flaxfågel, Tegelkross, Hinderlöpning, Slå mullvaden, Tornbygge) + ett hemligt
 - `js/features.js` – allt som öppnas i byggnaderna
 - `js/main.js` – start, länkar och hemligheter

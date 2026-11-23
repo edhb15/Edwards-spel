@@ -14,7 +14,7 @@
     skola: { name: 'Skolgården', icon: '🏫', color: '#5a4a1f', ground: '#4a3d1c', desc: 'Skolkaos och rymningar', x: 1460, y: 1200, w: 780, h: 520 },
     hjarna: { name: 'Hjärnberget', icon: '🧠', color: '#2a2f6a', ground: '#23284f', desc: 'Pussel och strategi', x: 180, y: 1200, w: 760, h: 520 },
     aventyr: { name: 'Äventyrsskogen', icon: '🌲', color: '#1f4a2a', ground: '#18361f', desc: 'Äventyr och fantasy', x: 120, y: 740, w: 560, h: 420 },
-    neon: { name: 'Neonzonen', icon: '🌈', color: '#4a1f5a', ground: '#2a1236', desc: 'Hemlig arkadhall – låses upp när du spelat 3 olika spel', x: 1000, y: 100, w: 400, h: 330, locked: true },
+    neon: { name: 'Neonzonen', icon: '🌈', color: '#c33dff', ground: '#140a22', desc: 'Arkadhall med alla minispel – låses upp när du spelat 3 olika spel', x: 960, y: 40, w: 480, h: 440, locked: true },
   };
 
   // x/y = door position on the map (building is drawn above it)

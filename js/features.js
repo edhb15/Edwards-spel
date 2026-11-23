@@ -200,7 +200,7 @@
     if (never.length) { const g = W.pick(r, never); out.push({ id: 'new', type: 'play', game: g.id, text: 'Testa ' + g.name + ' – du har aldrig spelat det!' }); }
     else { const g = W.pick(r, D.GAMES); out.push({ id: 'new', type: 'play', game: g.id, text: 'Spela ' + g.name + ' igen' }); }
     const m = W.pick(r, W.mini.PUBLIC);
-    const target = { stars: 500, aim: 1200, dodge: 900, memory: 400 }[m] + Math.floor(r() * 4) * 100 + W.level() * 30;
+    const target = W.mini.GAMES[m].pc + Math.floor(r() * 4) * Math.round(W.mini.GAMES[m].pc / 6) + W.level() * Math.round(W.mini.GAMES[m].pc / 40);
     out.push({ id: 'mini', type: 'mini', mini: m, target, text: 'Få minst ' + fmt(target) + ' poäng i ' + W.mini.GAMES[m].name + ' (Neonzonen eller Bossarenan)' });
     out.push(W.pick(r, [
       { id: 'x', type: 'boss', text: 'Gör skada på veckans boss' },
@@ -770,10 +770,8 @@
       }],
       mini: ['🕹️ Minispel', async () => {
         const wrap = h('div', { class: 'two' });
-        for (const m of W.mini.PUBLIC) {
-          const rows = bestPerName(await W.rows({ board: 'u:mini:' + m, order: 'score.desc', limit: 100 }));
-          wrap.appendChild(h('div', null, h('h4', null, W.mini.GAMES[m].icon + ' ' + W.mini.GAMES[m].name), list(rows.slice(0, 5), null, P().name)));
-        }
+        const all = await Promise.all(W.mini.PUBLIC.map((m) => W.rows({ board: 'u:mini:' + m, order: 'score.desc', limit: 100 })));
+        W.mini.PUBLIC.forEach((m, i) => wrap.appendChild(h('div', null, h('h4', null, W.mini.GAMES[m].icon + ' ' + W.mini.GAMES[m].name), list(bestPerName(all[i]).slice(0, 5), null, P().name))));
         return wrap;
       }],
       games: ['🎮 Spelen', async () => {
