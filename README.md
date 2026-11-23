@@ -2,7 +2,7 @@
 
 Den nya startsidan för Edwards och Johns spel. I stället för en lista med spel får man en hel värld att gå runt i – varje spel är en byggnad.
 
-**▶ Spela:** https://edhb15.github.io/EoJ-varlden/ (när GitHub Pages är påslaget)
+**▶ Spela:** https://edhb15.github.io/edwards-spel/ (när GitHub Pages är påslaget)
 
 Själva spelen ligger kvar i [EoJ-spel](https://github.com/edhb15/EoJ-spel) och länkas därifrån, så de behöver inte flyttas.
 
