@@ -778,7 +778,7 @@
       default: {
         // generic building (+ hangar / ramp / garage / school / cube / lab / hall styles)
         const roof = s.kind === 'school' ? '#b04a3a' : s.kind === 'lab' ? '#e8f8ff' : undefined;
-        const bodyCol = s.kind === 'school' ? '#d8a060' : s.kind === 'cube' ? '#5a3aa0' : s.kind === 'hall' ? shade(col, 0.9) : col;
+        const bodyCol = s.kind === 'school' ? '#d8a060' : s.kind === 'cube' ? '#5a3aa0' : s.kind === 'hall' ? shade(col, 0.9) : s.kind === 'hospital' ? '#d8d4c8' : col;
         box(x, top, w, fh, depth, bodyCol, { roof: roof || shade(col, 1.12) });
         if (s.kind === 'hangar') {
           ctx.fillStyle = shade(col, 0.9); ctx.beginPath(); ctx.ellipse(s.x + depth * 0.25, top - depth * 0.35, w / 2 + 4, depth * 0.55, 0, Math.PI, 0); ctx.fill();
@@ -804,6 +804,12 @@
         } else if (s.kind === 'lab') {
           windows(x, top + 4, w, fh - 40, 4, 2, night, 7);
           ctx.fillStyle = '#e8f8ff'; ctx.beginPath(); ctx.ellipse(s.x + depth * 0.25, top - depth * 0.35, 34, 20, 0, Math.PI, 0); ctx.fill();
+        } else if (s.kind === 'hospital') {
+          windows(x, top + 4, w, fh - 40, 5, 3, night, 11);
+          // red cross sign on the facade corner (the billboard covers the middle)
+          const cx = x + w - 22, cy = top + 10;
+          ctx.fillStyle = '#fff'; ctx.fillRect(cx - 14, cy, 28, 28);
+          ctx.fillStyle = Math.sin(t * 2) > -0.6 ? '#c8161d' : '#5a0a0e'; ctx.fillRect(cx - 4, cy + 4, 8, 20); ctx.fillRect(cx - 10, cy + 10, 20, 8);
         } else if (s.kind === 'hall') {
           for (let i = 0; i < 4; i++) { ctx.fillStyle = '#efe8d8'; ctx.fillRect(x + 12 + i * ((w - 24) / 3.4), top + 6, 10, fh - 12); }
           ctx.fillStyle = shade(col, 1.2); ctx.beginPath(); ctx.moveTo(x - 6, top + 2); ctx.lineTo(s.x, top - 30); ctx.lineTo(x + w + 6, top + 2); ctx.fill();
