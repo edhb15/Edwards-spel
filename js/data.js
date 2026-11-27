@@ -51,6 +51,9 @@
     { id: 'world', name: 'World Domination', d: 'hjarna', x: 760, y: 1440, w: 200, h: 150, kind: 'globe', roof: '#3d9bff',
       url: OLD + 'games/world-domination/index.html', img: PREV + 'world-domination.jpg', video: PREV + 'world-domination.mp4',
       tag: '2D • Strategi', added: '2026-11-16', desc: 'Styr ett av världens länder och ta över planeten – med krig, allianser, spioner och diplomati.' },
+    { id: 'tvattbert', name: 'TVÄTTBERT: RED ZONE', d: 'action', x: 1840, y: 650, w: 210, h: 160, kind: 'hospital', roof: '#c8161d', desktop: true,
+      url: OLD + 'games/tvattbert-red-zone/index.html', img: PREV + 'tvattbert-red-zone.jpg', video: PREV + 'tvattbert-red-zone.mp4',
+      tag: '3D • FPS • Överlevnad', added: '2026-11-27', desc: 'Överlev zombieapokalypsen i ett ödelagt Göteborg byggt från en 3D-modell av staden. Blir du biten har du fem minuter på dig att hitta motgiftet på Sahlgrenska. Endast för dator.' },
   ];
 
   // Daily Mystery: 5 clues per game, released during the day.
@@ -67,6 +70,7 @@
     teacher: ['Pappersbollar.', 'Någon blir väldigt arg.', 'Råma som en ko.', 'Dumma frågor rekommenderas.', 'Ett sammanbrott.'],
     rooms: ['Dörren leder inte dit du tror.', 'Väggarna ljuger.', 'Förstapersonsperspektiv.', 'Ta dig ut.', 'Omöjligt.'],
     world: ['Hela planeten.', 'Spioner och allianser.', 'Välj ett land.', 'Diplomati kan hjälpa.', 'Ta över allt.'],
+    tvattbert: ['Ett bett räcker.', 'Du har fem minuter på dig.', 'Botemedlet finns på ett sjukhus.', 'En kyrka på en kulle är en fristad.', 'De döda vandrar i Göteborg.'],
   };
 
   // Game Roulette: challenge text + minutes
@@ -82,6 +86,7 @@
     teacher: [['Få sammanbrott på under 2 minuter', 3], ['Gör läraren arg bara med frågor', 5], ['Råma 10 gånger utan att åka ut', 4]],
     rooms: [['Klara en nivå utan att gå baklänges', 6], ['Klara Del 1 på under 10 minuter', 10], ['Hitta utgången i första rummet på 30 sekunder', 2]],
     world: [['Bilda en allians inom 5 minuter', 5], ['Ta över ett grannland utan krig', 10], ['Spela som det minsta landet du hittar', 10]],
+    tvattbert: [['Ta dig från Masthuggskyrkan till Slottsskogen utan att bli biten', 8], ['Döda 10 zombier med bara kniven', 8], ['Hitta ett nytt vapen inom 5 minuter', 5]],
   };
 
   // Bosses come one after another: a new one appears as soon as the old one dies.
@@ -122,7 +127,7 @@
   const COMMUNITY = [
     { metric: 'damage', goal: 60000, text: 'Gör 60 000 skada på bossar tillsammans', reward: 'gold-fountain', rewardName: 'Guldfontänen i Torget + 🏆 Guldpokal till ditt rum' },
     { metric: 'plays', goal: 150, text: 'Starta 150 spel tillsammans', reward: 'fireworks', rewardName: 'Fyrverkerier över världen + 🎆 Raket till ditt rum' },
-    { metric: 'games', goal: 11, text: 'Spela alla 11 spelen minst en gång (tillsammans)', reward: 'rainbow', rewardName: 'Regnbågsväg i hela världen + 🌈 Regnbågsmatta' },
+    { metric: 'games', goal: 12, text: 'Spela alla 12 spelen minst en gång (tillsammans)', reward: 'rainbow', rewardName: 'Regnbågsväg i hela världen + 🌈 Regnbågsmatta' },
     { metric: 'secrets', goal: 25, text: 'Hitta hemligheter 25 gånger tillsammans', reward: 'ufo', rewardName: 'Ett UFO svävar över Torget + 🛸 UFO-modell' },
     { metric: 'mystery', goal: 40, text: 'Lös dagens mysterium 40 gånger tillsammans', reward: 'detective', rewardName: 'Detektivstaty + 🔍 Förstoringsglas' },
   ];
