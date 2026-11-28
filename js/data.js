@@ -51,9 +51,9 @@
     { id: 'world', name: 'World Domination', d: 'hjarna', x: 760, y: 1440, w: 200, h: 150, kind: 'globe', roof: '#3d9bff',
       url: OLD + 'games/world-domination/index.html', img: PREV + 'world-domination.jpg', video: PREV + 'world-domination.mp4',
       tag: '2D • Strategi', added: '2026-11-16', desc: 'Styr ett av världens länder och ta över planeten – med krig, allianser, spioner och diplomati.' },
-    { id: 'tvattbert', name: 'TVÄTTBERT: RED ZONE', d: 'action', x: 1840, y: 650, w: 210, h: 160, kind: 'hospital', roof: '#c8161d', desktop: true,
+    { id: 'tvattbert', name: 'TVÄTTBERT: RED ZONE', d: 'action', x: 1840, y: 650, w: 210, h: 160, kind: 'hospital', roof: '#c8161d',
       url: OLD + 'games/tvattbert-red-zone/index.html', img: PREV + 'tvattbert-red-zone.jpg', video: PREV + 'tvattbert-red-zone.mp4',
-      tag: '3D • FPS • Överlevnad', added: '2026-11-27', desc: 'Överlev zombieapokalypsen i ett ödelagt Göteborg byggt från en 3D-modell av staden. Blir du biten har du fem minuter på dig att hitta motgiftet på Sahlgrenska. Endast för dator.' },
+      tag: '3D • FPS • Överlevnad', added: '2026-11-27', desc: 'Överlev zombieapokalypsen i ett ödelagt Göteborg byggt från en 3D-modell av staden. Blir du biten har du fem minuter på dig att hitta motgiftet på Sahlgrenska – till fots eller i en stulen bil. Fungerar på dator och mobil.' },
   ];
 
   // Daily Mystery: 5 clues per game, released during the day.
